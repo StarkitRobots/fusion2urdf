@@ -1,7 +1,6 @@
 #Author-Poleschuk Fedor
 #Description-Generate URDF file from Fusion 360
 
-from urdf2webots.importer import convertUrdfContent
 import adsk, adsk.core, adsk.fusion, traceback
 import os
 import sys
@@ -14,24 +13,10 @@ design = adsk.fusion.Design.cast(product)
 title = 'Fusion2URDF'
 
 
-def install_and_import(package):
-            import importlib
-            try:
-                importlib.import_module(package)
-            except ImportError:
-                import pip
-                pip.main(['install', package])
-            finally:
-                globals()[package] = importlib.import_module(package)
-app = adsk.core.Application.get()
-ui = app.userInterface
-install_and_import('urdf2webots')
+packagepath = os.path.join(os.path.dirname(sys.argv[0]), 'Lib/site-packages/')
+if packagepath not in sys.path:
+    sys.path.append(packagepath)
 
-
-try: 
-    import urdf2webots
-except:
-    ui.messageBox('urdf2webots not installed', title)
 
 
 from .core import Link, Joint, Write
@@ -48,10 +33,33 @@ from .core import Link, Joint, Write
 # I'm not sure how prismatic joint acts if there is no limit in fusion model
 
 def run(context):
+    def install_and_import(package):
+            import importlib
+            try:
+                importlib.import_module(package)
+            except ImportError:
+                ui.messageBox('Install urdf2webots', "Install library")
+
+                import pip
+                pip.main(['install', package])
+            finally:
+                globals()[package] = importlib.import_module(package)
+
+
+    app = adsk.core.Application.get()
+    ui = app.userInterface
+    install_and_import('urdf2webots')
+# from urdf2webots.importer import convertUrdfContent
+
+
+    try:
+        import urdf2webots
+    except:
+        ui.messageBox('urdf2webots not installed', title)
     ui = None
     success_msg = 'Successfully create URDF file'
     msg = success_msg
-    
+        
     try:
         # --------------------
         # initialize
