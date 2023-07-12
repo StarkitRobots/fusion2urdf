@@ -136,11 +136,12 @@ def run(context):
 
         try:
             import pathlib
-
+            (version, cancelled) = ui.inputBox(
+                'Version of webots {R2023b,R2023a,R2022b,R2022a,R2021b,R2021a,R2020b,R2020a}', 'Webots')
             # robot_description = pathlib.Path(
             #     save_dir+'/urdf/'+robot_name+'.urdf').read_text()
             # convertUrdfContent(input=robot_description)
-            convertUrdfFile(input=save_dir+'/urdf/'+robot_name+'.urdf', output=save_dir+'/urdf/')
+            convertUrdfFile(input=save_dir+'/urdf/'+robot_name+'.urdf', output=save_dir+'/urdf/', targetVersion=version)
             
 
         except:
