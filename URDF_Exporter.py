@@ -4,19 +4,9 @@
 import adsk, adsk.core, adsk.fusion, traceback
 import os
 import sys
+from .Modules.lib.urdf2webots.importer import convertUrdfFile
 from .utils import utils
 from .utils import xacro
-app = adsk.core.Application.get()
-ui = app.userInterface
-product = app.activeProduct
-design = adsk.fusion.Design.cast(product)
-title = 'Fusion2URDF'
-
-
-packagepath = os.path.join(os.path.dirname(sys.argv[0]), 'Lib/site-packages/')
-if packagepath not in sys.path:
-    sys.path.append(packagepath)
-
 
 
 from .core import Link, Joint, Write
@@ -33,41 +23,24 @@ from .core import Link, Joint, Write
 # I'm not sure how prismatic joint acts if there is no limit in fusion model
 
 def run(context):
-    def install_and_import(package):
-            import importlib
-            try:
-                importlib.import_module(package)
-            except ImportError:
-                ui.messageBox('Install urdf2webots', "Install library")
-
-                import pip
-                pip.main(['install', package])
-            finally:
-                globals()[package] = importlib.import_module(package)
-
-
-    app = adsk.core.Application.get()
-    ui = app.userInterface
-    install_and_import('urdf2webots')
-# from urdf2webots.importer import convertUrdfContent
-
-
-    try:
-        import urdf2webots
-    except:
-        ui.messageBox('urdf2webots not installed', title)
     ui = None
     success_msg = 'Successfully create URDF file'
     msg = success_msg
-        
+
+
     try:
-        # --------------------
-        # initialize
         app = adsk.core.Application.get()
         ui = app.userInterface
         product = app.activeProduct
         design = adsk.fusion.Design.cast(product)
         title = 'Fusion2URDF'
+        units = design.unitsManager
+
+        units.distanceDisplayUnits = 2
+
+
+
+
         if not design:
             ui.messageBox('No active Fusion design', title)
             return
@@ -132,12 +105,11 @@ def run(context):
 
         xacro.xacro(save_dir, robot_name)
 
-        from urdf2webots.importer import convertUrdfFile
 
         try:
             import pathlib
             (version, cancelled) = ui.inputBox(
-                'Version of webots {R2023b,R2023a,R2022b,R2022a,R2021b,R2021a,R2020b,R2020a}', 'Webots')
+                'Version of webots {R2023b,R2023a,R2022b,R2022a,R2021b,R2021a,R2020b,R2020a}', 'Webots', 'R2023b')
             # robot_description = pathlib.Path(
             #     save_dir+'/urdf/'+robot_name+'.urdf').read_text()
             # convertUrdfContent(input=robot_description)
