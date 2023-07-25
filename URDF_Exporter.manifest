@@ -1,0 +1,10 @@
+{
+	"autodeskProduct":	"Fusion360",
+	"type":	"script",
+	"author":	"PoleschukFA",
+	"description":	{
+		"":	"Export to URDF and Webots file"
+	},
+	"supportedOS":	"windows|mac",
+	"editEnabled":	true
+}
