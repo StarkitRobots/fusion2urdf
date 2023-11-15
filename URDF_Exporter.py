@@ -122,8 +122,16 @@ def run(context):
         with open(os.path.join(save_dir, 'urdf', robot_name.title() + '.proto'), 'r') as file:
             data = file.read()
             data = data.replace("\\", "/")
+            data = data.replace(save_dir,'..')
 
         with open(os.path.join(save_dir, 'urdf', robot_name.title() + '.proto'), 'w') as file:
+            file.write(data)
+        
+        with open(os.path.join(save_dir, 'urdf', robot_name.title() + '.urdf'), 'r') as file:
+            data = file.read()
+            data = data.replace("../",'package://'+os.path.basename(os.path.normpath(save_dir))+'/')
+
+        with open(os.path.join(save_dir, 'urdf', robot_name.title() + '.urdf'), 'w') as file:
             file.write(data)
         
         ui.messageBox(msg, title)
