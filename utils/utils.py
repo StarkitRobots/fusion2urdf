@@ -81,7 +81,7 @@ def export_stl(design, save_dir, components):
                     # create stl exportOptions
                     stlExportOptions = exportMgr.createSTLExportOptions(occ, fileName)
                     stlExportOptions.sendToPrintUtility = False
-                    stlExportOptions.isBinaryFormat = False
+                    stlExportOptions.isBinaryFormat = True
                     # options are .MeshRefinementLow .MeshRefinementMedium .MeshRefinementHigh
                     stlExportOptions.meshRefinement = adsk.fusion.MeshRefinementSettings.MeshRefinementLow
                     stlExportOptions.unitType = 2
